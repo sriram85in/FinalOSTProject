@@ -28,7 +28,9 @@ import xml.dom.minidom
 import re
   
 
-
+#===============================================================================
+# is_present : to check if the category is already present
+#===============================================================================
 def is_present(self, user_name, category_name):
     categories = db.GqlQuery("SELECT * FROM AllItems WHERE categoryName = :1 AND author = :2", category_name, user_name)
 
@@ -38,10 +40,18 @@ def is_present(self, user_name, category_name):
 
     return False
 
+#===============================================================================
+#  Utility function to include item into the category
+#===============================================================================
+
 def createNewItem(item_name, category_name, user_name):
     item_new = AllItems(categoryName=category_name,author=user_name,itemName=item_name)
     item_new.itemName = item_name
     item_new.put()
+    
+#===============================================================================
+#  Utility function to delete item from category
+#===============================================================================
     
 def delete_item(item_name, category_name, user_name):
       deleteFromAllItems = db.GqlQuery("SELECT * FROM AllItems WHERE categoryName = :1 AND author = :2 AND itemName = :3", 
@@ -63,6 +73,10 @@ def delete_item(item_name, category_name, user_name):
                                category_name, item_name)
       results = deleteFromAllLosers.fetch(100)
       db.delete(results)
+      
+#===============================================================================
+# Class for login functionality
+#===============================================================================
     
 class Login(webapp.RequestHandler):
   def get(self):
@@ -94,6 +108,9 @@ class Login(webapp.RequestHandler):
       path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
       self.response.out.write(template.render(path, template_values))
 
+#===============================================================================
+# Class to initial page after login (to get into the application)
+#===============================================================================
 class Welcome(webapp.RequestHandler):
   def post(self):
       loggedInUser = self.request.get('loggedInUser')
@@ -119,6 +136,9 @@ class Welcome(webapp.RequestHandler):
       path = os.path.join(os.path.dirname(__file__), 'templates/welcome.html')
       self.response.out.write(template.render(path, template_values))
 
+#===============================================================================
+# To get the screen back to home page
+#===============================================================================
 class WelcomeBack(webapp.RequestHandler):
   def get(self):
       q4 = db.GqlQuery("SELECT * FROM AllResults")
@@ -139,6 +159,9 @@ class WelcomeBack(webapp.RequestHandler):
       path = os.path.join(os.path.dirname(__file__), 'templates/welcome.html')
       self.response.out.write(template.render(path, template_values))
 
+#===============================================================================
+# Utility class to create category
+#===============================================================================
 class CreateCategory(webapp.RequestHandler):
   def get(self):
       q4 = db.GqlQuery("SELECT * FROM AllResults")
@@ -159,6 +182,9 @@ class CreateCategory(webapp.RequestHandler):
       path = os.path.join(os.path.dirname(__file__), 'templates/CreateCategory.html')
       self.response.out.write(template.render(path, template_values))
       
+#===============================================================================
+# Utility class to add items into the category
+#===============================================================================
 class AddItems(webapp.RequestHandler):
   def get(self):
         loggedInUser = ""
@@ -177,6 +203,9 @@ class AddItems(webapp.RequestHandler):
         path = os.path.join(os.path.dirname(__file__), 'templates/UserCategs.html')
         self.response.out.write(template.render(path, template_values))
 
+#===============================================================================
+# Utility class to search item into the category
+#===============================================================================
 class SearchItem(webapp.RequestHandler):
   def get(self):
       q4 = db.GqlQuery("SELECT * FROM AllResults")
@@ -198,7 +227,9 @@ class SearchItem(webapp.RequestHandler):
       self.response.out.write(template.render(path, template_values))
       
       
-      
+ #==============================================================================
+ # Utility class to export category (initial page)
+ #==============================================================================
 class ExportIntialXML(webapp.RequestHandler):
   def get(self):
     q4 = db.GqlQuery("SELECT * FROM AllResults")
@@ -221,6 +252,10 @@ class ExportIntialXML(webapp.RequestHandler):
     path = os.path.join(os.path.dirname(__file__), 'templates/ExportCatPage.html')
     self.response.out.write(template.render(path, template_values))
     
+
+#===============================================================================
+# Utility class to Import XML 
+#===============================================================================
 class ImportXML(webapp.RequestHandler):  #Export XML For a given Category
   def post(self):
         q4 = db.GqlQuery("SELECT * FROM AllResults")
@@ -240,19 +275,13 @@ class ImportXML(webapp.RequestHandler):  #Export XML For a given Category
         user_name = self.request.get('loggedInUser')
         x = self.request.POST.multi['imported_file'].file.read()
 
-        # check whether the xml file is a valid one and according to the desired format and tag names
         dom = xml.dom.minidom.parseString(x)
 
-        # parse xml file        
         root = fromstring(x)                        
         categoryName = root.findall('NAME')
         
         categoryName = categoryName[0].text
-        #self.response.out.write("<br/>category = " + categoryName)
-        
-        # check whether the category with the same name is already present
         if is_present(self, user_name, categoryName) == False:
-            # create a new category with new name
             category_new = AllCategories(categoryName=categoryName,author=user_name)
             category_new.author = user_name
             category_new.categoryName = categoryName
@@ -312,6 +341,9 @@ class ImportXML(webapp.RequestHandler):  #Export XML For a given Category
         path = os.path.join(os.path.dirname(__file__), 'templates/ImportXML.html')
         self.response.out.write(template.render(path,template_values))
         
+#===============================================================================
+# Utility class to import XML (intial page)
+#===============================================================================
 class ImportXMLIntial(webapp.RequestHandler):
   def get(self):
       q4 = db.GqlQuery("SELECT * FROM AllResults")
@@ -332,7 +364,9 @@ class ImportXMLIntial(webapp.RequestHandler):
       path = os.path.join(os.path.dirname(__file__), 'templates/ImportXML.html')
       self.response.out.write(template.render(path, template_values))
 
-
+#===============================================================================
+# Utility call to show valid categories for voting
+#===============================================================================
 class Voting(webapp.RequestHandler):
   def get(self):
       q4 = db.GqlQuery("SELECT * FROM AllResults")
@@ -354,6 +388,9 @@ class Voting(webapp.RequestHandler):
       path = os.path.join(os.path.dirname(__file__), 'templates/AllCategs.html')
       self.response.out.write(template.render(path, template_values))
 
+#===============================================================================
+# Utility class to show the result page
+#===============================================================================
 class Results(webapp.RequestHandler):
   def get(self):
     q4 = db.GqlQuery("SELECT * FROM AllResults")
@@ -376,7 +413,9 @@ class Results(webapp.RequestHandler):
     path = os.path.join(os.path.dirname(__file__), 'templates/AllCategs.html')
     self.response.out.write(template.render(path, template_values))
     
-
+#===============================================================================
+# Utility class to show search Intial page
+#===============================================================================
 class SearchIntialPage(webapp.RequestHandler):
   def get(self):
           q4 = db.GqlQuery("SELECT * FROM AllResults")
@@ -418,7 +457,9 @@ class SearchIntialPage(webapp.RequestHandler):
           self.response.out.write(template.render(path, template_values))       
   
           
-      
+#===============================================================================
+# Utility class to pick random item from category 
+#===============================================================================
 class RandomItems(webapp.RequestHandler):
   def post(self):
       
@@ -504,7 +545,10 @@ class RandomItems(webapp.RequestHandler):
           path = os.path.join(os.path.dirname(__file__), 'templates/VotePage.html')
           self.response.out.write(template.render(path, template_values))  
 
-class NewAddedVote(webapp.RequestHandler):  #To update Vote casted and option to vote again on same category
+#===============================================================================
+# Utility class to add votes to items to category
+#===============================================================================
+class NewAddedVote(webapp.RequestHandler):  
   def post(self):
       loggedInUser = self.request.get('loggedInUser')
       logout = self.request.get('logout')
@@ -535,7 +579,7 @@ class NewAddedVote(webapp.RequestHandler):  #To update Vote casted and option to
               newVote.loser = previousitem1
               newVote.put()
           else:
-              # Do Nothing
+              
               selectedItem = ""         
       
       if previousComment1 != None: 
@@ -609,7 +653,10 @@ class NewAddedVote(webapp.RequestHandler):  #To update Vote casted and option to
       path = os.path.join(os.path.dirname(__file__), 'templates/VotePage.html')
       self.response.out.write(template.render(path, template_values))     
       
-class ResultsPage(webapp.RequestHandler):  #View Results on a given category
+#===============================================================================
+# Utility class to show the result page
+#===============================================================================
+class ResultsPage(webapp.RequestHandler):  
   def post(self):
       loggedInUser = self.request.get('loggedInUser')
       logout = self.request.get('logout')
@@ -672,7 +719,10 @@ class ResultsPage(webapp.RequestHandler):  #View Results on a given category
       path = os.path.join(os.path.dirname(__file__), 'templates/ResultsPage.html')
       self.response.out.write(template.render(path, template_values))
       
-class NewAddedItem(webapp.RequestHandler):  #To show added item and option to add more
+#===============================================================================
+# Utility class to add items to category
+#===============================================================================
+class NewAddedItem(webapp.RequestHandler):  
   def post(self):
 
       selectedCat = self.request.get('catName')
@@ -740,9 +790,12 @@ class NewAddedItem(webapp.RequestHandler):  #To show added item and option to ad
       path = os.path.join(os.path.dirname(__file__), 'templates/UserItems.html')
       self.response.out.write(template.render(path, template_values))
 
+#===============================================================================
+# Utility class to upload files to GAP
+#===============================================================================
 class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
   def post(self):
-    upload_files = self.get_uploads('file')  # 'file' is file upload field in the form
+    upload_files = self.get_uploads('file')  
     blob_info = upload_files[0]
     self.redirect('/serve/%s' % blob_info.key())
 
@@ -752,7 +805,10 @@ class ServeHandler(blobstore_handlers.BlobstoreDownloadHandler):
     blob_info = blobstore.BlobInfo.get(resource)
     self.send_blob(blob_info)
     
-class ExportXML(webapp.RequestHandler):  #Export XML For a given Category
+#===============================================================================
+# Utility function to export XML of category
+#===============================================================================
+class ExportXML(webapp.RequestHandler):  
   def post(self):
         loggedInUser = self.request.get('loggedInUser')
         catAndUser = self.request.get('catName')
@@ -776,7 +832,10 @@ class ExportXML(webapp.RequestHandler):  #Export XML For a given Category
             itemNameTag.text = item.itemName
         self.response.out.write(tostring(root))
         
-class CreateCategoryIntial(webapp.RequestHandler):  #Export XML For a given Category
+#===============================================================================
+# Utility class to create category( show initial page)
+#===============================================================================
+class CreateCategoryIntial(webapp.RequestHandler):  
   def post(self):
       loggeduser = db.GqlQuery("SELECT * FROM Loggeduser")
       for user in loggeduser:
@@ -809,8 +868,10 @@ class CreateCategoryIntial(webapp.RequestHandler):  #Export XML For a given Cate
       path = os.path.join(os.path.dirname(__file__), 'templates/CreateCategory.html')
       self.response.out.write(template.render(path, template_values))
       
-      
-class AllItemsForUser(webapp.RequestHandler):  # Edit Existing Category : i.e; This supports only addition of items to the category
+#===============================================================================
+# Utility class to show all items of the category
+#===============================================================================
+class AllItemsForUser(webapp.RequestHandler):  
   def post(self):
       selectedCat = self.request.get('catName')
       loggedInUser = self.request.get('loggedInUser')
@@ -831,20 +892,7 @@ class AllItemsForUser(webapp.RequestHandler):  # Edit Existing Category : i.e; T
           cntr6.expirydate=cntr6.date+datetime.timedelta(days=day1, hours=hours1)
           cntr6.put()
  
-      #if expTimeMM:
-#      allExpTime = db.GqlQuery("SELECT * FROM ExpirationTime WHERE categoryName = :1 AND loggedInUser = :2", 
-#                                 selectedCat, loggedInUser)
-#      results6 = allExpTime.fetch(100)
-#      db.delete(results6)  
-#               
-#      newExpTime = ExpirationTime()
-#      newExpTime.categoryName = selectedCat
-#      newExpTime.loggedInUser = loggedInUser
-#      newExpTime.expHH = expTimeHH
-#      newExpTime.expMM = expTimeMM 
-#      newExpTime.expSS = expTimeSS
-#      newExpTime.put()
-#     
+      
       allExpTime = db.GqlQuery("SELECT * FROM ExpirationTime WHERE categoryName = :1 AND loggedInUser = :2", 
                                  selectedCat, loggedInUser)
       template_values = {
@@ -861,8 +909,9 @@ class AllItemsForUser(webapp.RequestHandler):  # Edit Existing Category : i.e; T
    
 
               
-         
-# Main Procedure for calling the appropriate class            
+#===============================================================================
+# Main mapping
+#===============================================================================
 application = webapp.WSGIApplication(
                                      [('/', Login),
                                       ('/welcome', Welcome),
