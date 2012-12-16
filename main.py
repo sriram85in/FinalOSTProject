@@ -17,7 +17,6 @@ from google.appengine.api import users
 from google.appengine.ext import webapp
 
 from Models import * 
-from NewAddedItem import *
 from xml.etree.ElementTree import Element, SubElement, tostring, XML, fromstring
 import xml.etree.ElementTree as ET
 from cStringIO import StringIO
