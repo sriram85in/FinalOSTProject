@@ -3,7 +3,23 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link href="/stylesheets/menu_assets/styles.css" rel="stylesheet" type="text/css">
+<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 <title>Insert title here</title>
+<script type="text/javascript">
+function validate()
+{
+  var retval = true;
+  var y=document.forms["importForm"]["imported_file"].value;
+  if(y==null || y=="")
+  {
+	  	alert("Please select a XML file");
+	  	retval = false;
+	  	return retval;
+  }
+  
+  return retval;
+}
+</script>
 </head>
 <body>
 			Welcome : <b> {{ loggedInUser }}  </b>
@@ -25,8 +41,9 @@
    			<li><a href="{{ logout }}">Logout</a> </li>
 		</ul>
 		</div>	
-	
-			<form method="post" action="/importXML" enctype="multipart/form-data">				
+			<p> Please choose a file. Advanced feature is also incorporated.
+			<br>
+			<form method="post" name="importForm" action="/importXML" onsubmit="return validate()" enctype="multipart/form-data">				
 				<input type=hidden name=loggedInUser value="{{ loggedInUser }}" />
 				<input type="file" name="imported_file" />
 				<input type="hidden" name="task_name" value="import_category" /> <br/> <br/>

@@ -15,6 +15,24 @@
 			  }
 		   }
 		  
+		    function validate()
+			  {
+			    var retval = false;
+			    var y=document.forms["voteForm"]["btn"].value;
+			    for (var i=0; i < document.voteForm.selectedItem.length; i++)
+			    {
+			      
+			      if (document.voteForm.selectedItem[i].checked)
+			      {
+			        retval = true;
+			        return retval;
+			      }
+			    }  
+				alert('Please select the Item')
+			    return retval;
+			  }
+		  
+		  
 	  </script>
   </head>
   <body onload="load('{{ previousComment1 }}','{{ previousComment2 }}')">
@@ -41,7 +59,7 @@
   	   <br />
   	   <br />
   	   <br />	
-	   <form name="voteForm" action="/newAddedVote" method="post">
+	   <form name="voteForm" action="/newAddedVote"  method="post">
 	       <b>
 	       {% if vote_cast %}
 	       		Voted Item : {{ selectedItem }}
@@ -52,7 +70,6 @@
 	       <p>Please vote on one of the Items Below:</p>
 	       <br />
 	       <br />
-	       <img src="{{pic1}}" alt="No Image">   <img src="/images/show/{{pic2}}" alt="No Image">
 	       <table class="imagetable">
 	       	 <tr>
 	       	 <th></th>
@@ -102,7 +119,7 @@
 	       	 	<td>
 	       	    </td>
 	       	 	<td>
-			      <p align="center"><button type="submit" name="btn" value="submit">Submit</button>&nbsp;</p>
+			      <p align="center"><button type="submit" name="btn" onclick="return validate()" value="submit">Submit</button>&nbsp;</p>
 	       	   </td>
 	       	   <td>
 			      <p align="left"><button type="submit" name="btn" value="skip">Skip</button></p>

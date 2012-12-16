@@ -17,6 +17,7 @@ from google.appengine.api import users
 from google.appengine.ext import webapp
 
 from Models import * 
+from FirstPage import FirstPage
 from xml.etree.ElementTree import Element, SubElement, tostring, XML, fromstring
 import xml.etree.ElementTree as ET
 from cStringIO import StringIO
@@ -41,6 +42,27 @@ def createNewItem(item_name, category_name, user_name):
     item_new = AllItems(categoryName=category_name,author=user_name,itemName=item_name)
     item_new.itemName = item_name
     item_new.put()
+    
+def delete_item(item_name, category_name, user_name):
+      deleteFromAllItems = db.GqlQuery("SELECT * FROM AllItems WHERE categoryName = :1 AND author = :2 AND itemName = :3", 
+                             category_name, user_name, item_name)
+      results = deleteFromAllItems.fetch(100)
+      db.delete(results)
+      
+      deleteFromAllComments = db.GqlQuery("SELECT * FROM AllComments WHERE categoryName = :1 AND itemName = :2", 
+                               category_name, item_name)
+      results = deleteFromAllComments.fetch(100)
+      db.delete(results)
+      
+      deleteFromAllWinners =  db.GqlQuery("SELECT * FROM AllVotes WHERE categoryName = :1 AND winner = :2", 
+                                category_name, item_name)
+      results = deleteFromAllWinners.fetch(100)
+      db.delete(results)
+          
+      deleteFromAllLosers =  db.GqlQuery("SELECT * FROM AllVotes WHERE categoryName = :1 AND loser = :2", 
+                               category_name, item_name)
+      results = deleteFromAllLosers.fetch(100)
+      db.delete(results)
     
 class Login(webapp.RequestHandler):
   def get(self):
@@ -174,6 +196,9 @@ class SearchItem(webapp.RequestHandler):
 
       path = os.path.join(os.path.dirname(__file__), 'templates/SearchItem.html')
       self.response.out.write(template.render(path, template_values))
+      
+      
+      
 class ExportIntialXML(webapp.RequestHandler):
   def get(self):
     q4 = db.GqlQuery("SELECT * FROM AllResults")
@@ -239,11 +264,50 @@ class ImportXML(webapp.RequestHandler):  #Export XML For a given Category
                 if child.tag == "ITEM":
                     childName = child.findall('NAME')
                     createNewItem(item_name=childName[0].text, category_name=category_new.categoryName, user_name=category_new.author)
-                                            
+        
+        else:
+            self.response.out.write('Category already present(advanced feature).')
+            xmlItemList = []
+            for child in root:
+                if child.tag == "ITEM":
+                    childName = child.findall('NAME')
+                    xmlItemList.append(childName[0].text)
+             
+            dbItemList = []
+            itemsForUser = db.GqlQuery("SELECT * FROM AllItems WHERE categoryName = :1 AND author = :2", categoryName, loggedInUser)
+            for item in itemsForUser:
+                dbItemList.append(item.itemName)
+                
+            is_dbItem_present = "F"    
+            for dbItem in dbItemList:
+                is_dbItem_present = "F"
+                for xmlItem in xmlItemList:    
+                    if dbItem == xmlItem:
+                        is_dbItem_present = "T"
+                        break
+                
+                if is_dbItem_present == "F":
+                    delete_item(item_name=dbItem, category_name=categoryName, user_name=loggedInUser)
+            
+            is_xmlItem_present = "F"
+            for xmlItem in xmlItemList:
+                is_xmlItem_present = "F"
+                for dbItem in dbItemList:
+                    if xmlItem == dbItem:
+                        is_xmlItem_present = "T"
+                        break
+                
+                if is_xmlItem_present == "F":
+                    createNewItem(item_name=xmlItem, category_name=categoryName, user_name=loggedInUser)
+                        
+                    
+                                 
         template_values = {
-        'loggedInUser': loggedInUser,
-        'logout': logout
-      }        
+          'loggedInUser':loggedInUser,
+          'logout': logout,
+          'import_success': "Y"                 
+        }                                                              
+               
         
         path = os.path.join(os.path.dirname(__file__), 'templates/ImportXML.html')
         self.response.out.write(template.render(path,template_values))
@@ -311,7 +375,50 @@ class Results(webapp.RequestHandler):
     
     path = os.path.join(os.path.dirname(__file__), 'templates/AllCategs.html')
     self.response.out.write(template.render(path, template_values))
+    
 
+class SearchIntialPage(webapp.RequestHandler):
+  def get(self):
+          q4 = db.GqlQuery("SELECT * FROM AllResults")
+          results4 = q4.fetch(1000)
+          db.delete(results4)
+          
+          loggedInUser = ""
+          loggeduser = db.GqlQuery("SELECT * FROM Loggeduser")
+          for user in loggeduser:
+              loggedInUser = user.loggedInUser
+              logout = user.logout
+          searchElement = self.request.get('searchElement')
+          resultListFound = []
+          count = 0
+          allItems = db.GqlQuery("SELECT * FROM AllItems")
+          for eachItem in allItems:
+              resultStr = ""
+              if searchElement in eachItem.itemName:
+                 resultStr = eachItem.itemName+"   found in "+eachItem.categoryName
+                 resultListFound.append(resultStr)
+                 count += 1
+              else:
+                  if searchElement in eachItem.categoryName:
+                      resultStr = eachItem.itemName+"   found in "+eachItem.categoryName
+                      resultListFound.append(resultStr)
+                      count += 1
+
+           
+          
+          template_values = {
+             'loggedInUser' : loggedInUser,
+             'resultListFound' : resultListFound,
+             'searchElement': searchElement,
+             'count': count,
+             'logout': logout
+          }
+
+          path = os.path.join(os.path.dirname(__file__), 'templates/SearchPage.html')
+          self.response.out.write(template.render(path, template_values))       
+  
+          
+      
 class RandomItems(webapp.RequestHandler):
   def post(self):
       
@@ -330,7 +437,7 @@ class RandomItems(webapp.RequestHandler):
       error_msg = ""
       if count < 2:
           error_msg = "Y"
-          allCategories = db.GqlQuery("SELECT * FROM AllCategories")
+          allCategories= AllCategories.all().filter("expirydate >", datetime.datetime.now());
           template_values = {
             'allCategories': allCategories,
             'loggedInUser': loggedInUser,
@@ -762,6 +869,7 @@ application = webapp.WSGIApplication(
                                       ('/welcomeBack', WelcomeBack),
                                       ('/randomItems', RandomItems),
                                       ('/allItemsForUser', AllItemsForUser),
+                                      ('/initChoice', FirstPage),
                                       ('/newAddedItem', NewAddedItem),
                                       ('/newAddedVote', NewAddedVote),
                                       ('/resultsPage', ResultsPage),
@@ -774,7 +882,8 @@ application = webapp.WSGIApplication(
                                       ('/importXMLIntial',ImportXMLIntial),
                                       ('/voting',Voting),
                                       ('/result',Results),
-                                      ('/createCategoryIntial',CreateCategoryIntial)],
+                                      ('/createCategoryIntial',CreateCategoryIntial),
+                                      ('/searchPageAction',SearchIntialPage)],
                                      debug=True)
 
 def main():

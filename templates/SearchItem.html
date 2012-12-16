@@ -3,7 +3,23 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link href="/stylesheets/menu_assets/styles.css" rel="stylesheet" type="text/css">
+<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 <title>Insert title here</title>
+<script type="text/javascript">
+function validate()
+{
+  var retval = true;
+  var y=document.forms["welcomeForm"]["searchElement"].value;
+  if(y==null || y=="")
+  {
+	  	alert("Please enter search criteria");
+	  	retval = false;
+	  	return retval;
+  }
+  
+  return retval;
+}
+</script>
 </head>
 <body>
 Welcome : <b> {{ loggedInUser }}  </b>

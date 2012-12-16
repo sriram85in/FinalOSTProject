@@ -19,58 +19,7 @@
 
 	  function validate()
       {
-        var timecheck = false;
-        var retval = false;
-        var hh = document.forms["userCategsForm"]["expTimeHH"].value;
-        var mm = document.forms["userCategsForm"]["expTimeMM"].value;
-        var ss = document.forms["userCategsForm"]["expTimeSS"].value;
-        
-        if(hh == null || hh == "") {
-            document.forms["userCategsForm"]["expTimeHH"].value = "0";
-            timecheck = true;
-        }
-        else if (hh > 11) {
-            timecheck = false;
-            alert('Expiration Hour cannot be greater than 12')
-            return timecheck;
-        }
-        else {
-            timecheck = true;
-        }
-        if(mm == null || mm == "") {
-            document.forms["userCategsForm"]["expTimeMM"].value = "0";
-            timecheck = true;
-        }
-        else if (mm > 59) {
-            timecheck = false;
-            alert('Expiration Minutes cannot be greater than 59')
-            return timecheck;
-        }
-        else {
-            timecheck = true;
-        }
-        if(ss == null || ss == "") {
-            document.forms["userCategsForm"]["expTimeSS"].value = "0";
-            timecheck = true;                
-        }
-        else if (ss > 59) {
-            timecheck = false;
-            alert('Expiration Seconds cannot be greater than 59')
-            return timecheck;
-        }
-        else {
-            timecheck = true;
-        }
-        for (var i=0; i < document.userCategsForm.r.length; i++)
-        {
-          if (document.userCategsForm.r[i].checked)
-          {
-            retval = true;
-            return retval;
-          }
-        }
-        alert('Select one of the options in order to proceed')
-        return retval;
+        return true;
       }
     </script>
   </head>
@@ -124,7 +73,7 @@
     		
     			<br/>
     			<br/>
-    			<p>Please enter the expiration time (HH:MM:SS) for the selected category (Optional)
+    			<p>Please enter the expiration time days and Hours (Optional)
     			
     		  <table border="0" cellspacing="0" >
               <tr>
