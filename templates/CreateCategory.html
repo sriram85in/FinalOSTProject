@@ -7,14 +7,16 @@
 <script type="text/javascript">
 function validate()
 {
-  var retval = false;
-  if(document.getElementsByName("catName") == '')
+  var retval = true;
+  var y=document.forms["welcomeForm"]["catName"].value;
+  if(y==null || y=="")
   {
 	  	alert("Please enter category name");
-	  	return false;
+	  	retval = false;
+	  	return retval;
   }
   
-  return true;
+  return retval;
 }
 
 </script>
@@ -39,7 +41,7 @@ function validate()
    			<li><a href="{{ logout }}">Logout</a> </li>
 		</ul>
 		</div>	
-	<form name="welcomeForm" action="/initChoice" onsubmit="return validate()" method="post">
+	<form name="welcomeForm" action="/createCategoryIntial" onsubmit="return validate()" method="post">
 		{% if categoryAdded %}
 	   	 	<h3> Category Added Successfully</h3>
 	     {% else %}
@@ -48,11 +50,11 @@ function validate()
 	     <br/>
 	     <br/>
 	     <br/>      
-		 Enter Category Name : <input type=text name=catName >
+		 Enter Category Name : <input type=text name="catName" id="catName" >
 		 <input type=hidden name=loggedInUser value="{{ loggedInUser }}" />
 		 <input type=hidden name=logout value="{{ logout }}" />
 		 <input type=hidden name=firstChoice value="opt3" />
-		 <button type="submit" value="Login">Submit</button>
+		 <button type="submit" value="Login" onclick=" return validate()">Submit</button>
 	</form>
 </body>
 </html>
