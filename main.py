@@ -668,6 +668,39 @@ class ExportXML(webapp.RequestHandler):  #Export XML For a given Category
             itemNameTag = SubElement(itemTag, 'NAME')
             itemNameTag.text = item.itemName
         self.response.out.write(tostring(root))
+        
+class CreateCategoryIntial(webapp.RequestHandler):  #Export XML For a given Category
+  def post(self):
+      loggeduser = db.GqlQuery("SELECT * FROM Loggeduser")
+      for user in loggeduser:
+          loggedInUser = user.loggedInUser
+          logout = user.logout
+      loggedInUser = self.request.get('loggedInUser')
+      categoryName = self.request.get('catName')
+      allCategories = db.GqlQuery("SELECT * FROM AllCategories where author = :1", loggedInUser)
+      isCatPresent = "F"
+      returnStatus = "Y"
+      for categ in allCategories:
+          if categoryName == categ.categoryName:
+               isCatPresent = "T"
+               returnStatus = ""
+               break
+           
+      if isCatPresent == "F":     
+          category = AllCategories()
+          category.author = loggedInUser
+          category.categoryName = categoryName
+          category.put()
+          
+      
+      template_values = {
+         'categoryAdded' : returnStatus,
+         'loggedInUser' : loggedInUser,
+         'logout': logout
+      }
+
+      path = os.path.join(os.path.dirname(__file__), 'templates/CreateCategory.html')
+      self.response.out.write(template.render(path, template_values))
       
       
 class AllItemsForUser(webapp.RequestHandler):  # Edit Existing Category : i.e; This supports only addition of items to the category
@@ -740,7 +773,8 @@ application = webapp.WSGIApplication(
                                       ('/importXML',ImportXML),
                                       ('/importXMLIntial',ImportXMLIntial),
                                       ('/voting',Voting),
-                                      ('/result',Results)],
+                                      ('/result',Results),
+                                      ('/createCategoryIntial',CreateCategoryIntial)],
                                      debug=True)
 
 def main():
