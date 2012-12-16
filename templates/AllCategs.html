@@ -1,0 +1,94 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link type="text/css" rel="stylesheet" href="/stylesheets/tablestyles.css" />
+    <link href="/stylesheets/menu_assets/styles.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+	    function validate()
+		  {
+		    var retval = false;
+		    for (var i=0; i < document.allCategsForm.r.length; i++)
+		    {
+		      if (document.allCategsForm.r[i].checked)
+		      {
+		        retval = true;
+		        return retval;
+		      }
+		    }  
+			alert('Select one of the options in order to proceed')
+		    return retval;
+		  }
+    </script>
+  </head>
+  <body>
+  
+  	   <br />
+  	   <br />
+  		Welcome : <b> {{ loggedInUser }}  </b>
+  		<div id='cssmenu'>
+	   <ul>
+   			<li class='active '><a href='/welcomeBack'><span>Home</span></a></li>
+   			<li class='has-sub '><a href='#'><span>Create</span></a>
+      		<ul>
+         		<li><a href='/createCategory' ><span>Create Category</span></a></li>
+         		<li><a href='/addItems'><span>Add Items</span></a></li>
+         		<li><a href='/importXMLIntial'><span>Import XML</span></a></li>
+      		</ul>
+   			</li>
+   			<li><a href='/exportIntialXML'><span>Export XML</span></a></li>
+   			<li><a href='/searchItem'><span>Search</span></a></li>
+   			<li><a href='/voting'><span>Vote for Category</span></a></li>
+   			<li><a href='/result'><span>Results of Category</span></a></li>
+   			<li><a href="{{ logout }}">Logout</a> </li>
+		</ul>
+		</div>	
+  		<br />
+  		<br />
+  		{% if opt4 %}
+	   		<form name="allCategsForm" action="/resultsPage" onsubmit="return validate()" method="post">
+	   	{% endif %}	
+	   	{% if opt5 %}
+	   		<form name="allCategsForm" action="/exportXML" onsubmit="return validate()" method="post">
+	     {% else %}
+	     	<form name="allCategsForm" action="/randomItems" onsubmit="return validate()" method="post">
+	     {% endif %}
+	     
+	     {% if error_msg %}
+	     	<h4>The category has less than 2 items.</h4>
+	     {% endif %}		
+  	   	  <p>Only Valid categories are displayed:</p>
+  	   	    <input type=hidden id="r" />
+  	   	    <table class="imagetable">
+  	   	    <tr>
+  	   	    <th></th>
+  	   	    <th>CategoryName</th>
+  	   	    <th> Author </th>
+  	   	    </tr>	
+	   		{% for eachCategory in allCategories %}	
+        		<tr>
+        		<td>
+        		<input type=radio id="r" name=catName value="{{ eachCategory.categoryName }},{{ eachCategory.author }}" /> 
+        		</td>
+        		<td>
+        		{{ eachCategory.categoryName }}
+        		</td>
+        		<td>
+        		{{ eachCategory.author }}
+        		</td>	
+        			 
+	        </tr>	
+    		{% endfor %}
+    		</table>
+    		<input type=hidden name=loggedInUser value="{{ loggedInUser }}" />
+    		<input type=hidden name=logout value="{{ logout }}" />
+	       <div>
+		      <button type="submit" value="Login">Submit</button>
+		      <button type="reset" value="Reset">Reset</button>
+		   </div>
+	   </form>
+    <br />
+    <br />
+    <br />
+    
+  </body>
+</html>

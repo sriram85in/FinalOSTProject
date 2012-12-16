@@ -1,0 +1,127 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link type="text/css" rel="stylesheet" href="/stylesheets/tablestyles.css" />
+    <link href="/stylesheets/menu_assets/styles.css" rel="stylesheet" type="text/css">
+	  <script type="text/javascript">
+		  function load(previousComment1,previousComment2) {
+			  if ((previousComment1 != null) && (previousComment1 != '')) {
+			    document.getElementById('previousComment1').disabled = true;
+			    document.getElementById('appendComment1').Value = "F"
+			  }  
+			  if ((previousComment2 != null) && (previousComment2 != '')) {
+				  document.getElementById('previousComment2').disabled = true;
+				  document.getElementById('appendComment2').Value = "F"
+			  }
+		   }
+		  
+	  </script>
+  </head>
+  <body onload="load('{{ previousComment1 }}','{{ previousComment2 }}')">
+  	   Welcome : <b> {{ loggedInUser }}  </b>
+	<div id='cssmenu'>
+	   <ul>
+	   		
+   			<li class='active '><a href='/welcomeBack'><span>Home</span></a></li>
+   			<li class='has-sub '><a href='#'><span>Create</span></a>
+      		<ul>
+         		<li><a href='/createCategory' ><span>Create Category</span></a></li>
+         		<li><a href='/addItems'><span>Add Items</span></a></li>
+         		<li><a href='/importXMLIntial'><span>Import XML</span></a></li>
+      		</ul>
+   			</li>
+   			<li><a href='/exportIntialXML'><span>Export XML</span></a></li>
+   			<li><a href='/searchItem'><span>Search</span></a></li>
+   			<li><a href='/voting'><span>Vote for Category</span></a></li>
+   			<li><a href='/result'><span>Results of Category</span></a></li>
+   			<li><a href="{{ logout }}">Logout</a> </li>
+		</ul>
+		</div>	
+	
+  	   <br />
+  	   <br />
+  	   <br />	
+	   <form name="voteForm" action="/newAddedVote" method="post">
+	       <b>
+	       {% if vote_cast %}
+	       		Voted Item : {{ selectedItem }}
+	     	 		
+	       {% endif %}
+	       </b>	      
+	       <br />	
+	       <p>Please vote on one of the Items Below:</p>
+	       <br />
+	       <br />
+	       <img src="{{pic1}}" alt="No Image">   <img src="/images/show/{{pic2}}" alt="No Image">
+	       <table class="imagetable">
+	       	 <tr>
+	       	 <th></th>
+	       	 <th> Item Name </th>
+	       	 <th> Comments </th>
+	       	 </tr>
+	       	 
+	       	 <tr>
+	       	   
+	       	   <td>
+	       			<input id="r" type=radio name=selectedItem value="{{ item1 }}" /> 
+	       	   </td>
+	       	   <td>
+	       	   {{ item1 }}
+	       	   </td>
+	       	   <td>
+	       	 	  <textarea id="previousComment1" name="previousComment1" rows="3" cols="60">{{ previousComment1 }}</textarea>
+	       	   </td>
+	       	   
+	       	 </tr>
+	       	 <tr>
+	       	 	<td>
+			       <input id="r" type=radio name=selectedItem value="{{ item2 }}" /> 
+	       	   </td>
+	       	 	<td>
+	       	 	{{ item2 }}
+	       	 	</td>
+	       	   <td>
+	       	   	  <textarea id="previousComment2" name="previousComment2" rows="3" cols="60">{{ previousComment2 }}</textarea>	
+	       	   </td>
+	       	 </tr>
+	       	 <tr>
+	       	 </tr>
+	       	 <tr>
+	       	 </tr>
+	       	 <tr>
+	       	 </tr>
+	       	 <tr>
+	       	 </tr>
+	       	 <tr>
+	       	 </tr>
+	       	 <tr>
+	       	 </tr>
+	       	 </table>
+	       	 <table>
+	       	 <tr>
+	       	 	<td>
+	       	    </td>
+	       	 	<td>
+			      <p align="center"><button type="submit" name="btn" value="submit">Submit</button>&nbsp;</p>
+	       	   </td>
+	       	   <td>
+			      <p align="left"><button type="submit" name="btn" value="skip">Skip</button></p>
+	       	   </td>
+	       	 </tr>
+	       </table>
+	       <br />
+	       <br />
+	       <input type=hidden id="r" />
+	       <input type=hidden name=loggedInUser value="{{ loggedInUser }}" />
+	       <input type=hidden name=logout value="{{ logout }}" />
+		   <input type=hidden name=username value="{{ author }}" />
+		   <input type=hidden name=selectedCat value="{{ selectedCat }}" />
+		   <input type=hidden name=item1 value="{{ item1 }}" />
+		   <input type=hidden name=item2 value="{{ item2 }}" />
+		   <input id="appendComment1" type=hidden name=appendComment1 value="T" />
+		   <input id="appendComment2" type=hidden name=appendComment2 value="T" />
+		   <br />
+	   </form>
+    
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link href="/stylesheets/menu_assets/styles.css" rel="stylesheet" type="text/css">
+  <script type="text/javascript">
+	  function toggle_visibility(id1,id2) {
+		  if ((id1 == 'show') && (id2 == 'hide')) {
+		    document.getElementById('searchElement').style.visibility='visible';
+		    document.getElementById('catName').style.visibility='hidden';
+		  }  
+		  else if ((id1 == 'hide') && (id2 == 'show')) {
+			document.getElementById('searchElement').style.visibility='hidden';  
+			document.getElementById('catName').style.visibility='visible';
+		  }
+		  else {
+			  document.getElementById('searchElement').style.visibility='hidden';
+			  document.getElementById('catName').style.visibility='hidden';
+		  }
+	   }
+	  
+	  function validate()
+	  {
+	    var retval = false;
+	    var x=document.forms["welcomeForm"]["searchElement"].value;
+	    var y=document.forms["welcomeForm"]["catName"].value;
+	    for (var i=0; i < document.welcomeForm.r.length; i++)
+	    {
+	      if (document.welcomeForm.r[i].checked)
+	      {
+	         if( (document.welcomeForm.r[i].value == 'opt6') && ((x==null || x=="")) ) {
+	        	 retval = false;
+	        	 alert('Search Field cannot be empty')
+	        	 return retval;
+	         }
+	         else if( (document.welcomeForm.r[i].value == 'opt3') && ((y==null || y=="")) ) {
+	        	 retval = false;
+	        	 alert('Category Name cannot be empty')
+	        	 return retval;
+	         }
+	    	  retval = true;
+	          return retval;
+	      }
+	    }  
+		alert('Select one of the options in order to proceed')
+	    return retval;
+	  }
+  </script>	  
+  </head>
+  <body>
+  	   <p align="left"></p>
+  	   <br />
+  	   <br />
+  	   
+  	   <div id='cssmenu'>
+	   <ul>
+   			<li class='active '><a href='/welcomeBack'><span>Home</span></a></li>
+   			<li class='has-sub '><a href='#'><span>Create</span></a>
+      		<ul>
+         		<li><a href='/createCategory' ><span>Create Category</span></a></li>
+         		<li><a href='/addItems'><span>Add Items</span></a></li>
+         		<li><a href='/importXMLIntial'><span>Import XML</span></a></li>
+      		</ul>
+   			</li>
+   			<li><a href='/exportIntialXML'><span>Export XML</span></a></li>
+   			<li><a href='/searchItem'><span>Search</span></a></li>
+   			<li><a href='/voting'><span>Vote for Category</span></a></li>
+   			<li><a href='/result'><span>Results of Category</span></a></li>
+   			<li><a href="{{ logout }}">Logout</a> </li>
+		</ul>
+		</div>	
+		
+		
+	   
+    
+
+  </body>
+</html>

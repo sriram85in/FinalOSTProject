@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link type="text/css" rel="stylesheet" href="/stylesheets/tablestyles.css" />
+    <link href="/stylesheets/menu_assets/styles.css" rel="stylesheet" type="text/css">
+	<script>
+		function validateForm() {
+		   var x=document.forms["userItemForm"]["itemName"].value;
+		   retval = false;
+		   for (var i=0; i < document.userItemForm.ck.length; i++) {
+	           if (document.userItemForm.ck[i].checked) {
+	             retval = true;
+	             break;
+	           }
+		   }
+		   if((retval == false) && (x==null || x=="")) {
+		      alert("Must select an Item to Delete or Add new Item to the category");
+		      return false;
+		   }
+		}   
+	</script>
+  </head>
+  <body>
+  	   Welcome : <b> {{ loggedInUser }}  </b>
+	<div id='cssmenu'>
+	   <ul>
+	   		
+   			<li class='active '><a href='/welcomeBack'><span>Home</span></a></li>
+   			<li class='has-sub '><a href='#'><span>Create</span></a>
+      		<ul>
+         		<li><a href='/createCategory' ><span>Create Category</span></a></li>
+         		<li><a href='/addItems'><span>Add Items</span></a></li>
+         		<li><a href='/importXMLIntial'><span>Import XML</span></a></li>
+      		</ul>
+   			</li>
+   			<li><a href='/exportIntialXML'><span>Export XML</span></a></li>
+   			<li><a href='/searchItem'><span>Search</span></a></li>
+   			<li><a href='/voting'><span>Vote for Category</span></a></li>
+   			<li><a href='/result'><span>Results of Category</span></a></li>
+   			<li><a href="{{ logout }}">Logout</a> </li>
+		</ul>
+		</div>	
+	
+	   <form enctype="multipart/form-data"  name="userItemForm" onsubmit="return validateForm()" action="/newAddedItem" method="post">
+  	   	  <p>Category Name : {{ selectedCat }}</p>
+  	   	  	<br />
+  	   	  	<table class="imagetable">
+  	   	  	<th></th>
+  	   	  	<th> Category Name</th>
+  	   	  	<th>Items</th>
+  	   	  	
+	   		{% for items in itemsForUser %}
+	   			<tr>
+	   			<td>
+	   			<input id="ck" type="checkbox" name="deletedItems" value="{{ items.itemName }}"  />
+	   			</td>
+	   			<td>
+	   			{{ selectedCat }}
+	   			</td>
+	   			<td>
+	   			{{ items.itemName }}
+	        	</td>
+	        	</tr>
+    		{% endfor %}
+    		</table>
+    	  <br>
+    	  <br>
+    	  
+    	  <div id=itemName >Add Another Item : <input type=text name=itemName > </div>
+    	  <br />
+    	  <input type=hidden name=catName value="{{ selectedCat }}" />
+    	  <input type=hidden name=loggedInUser value="{{ loggedInUser }}" />
+    	  <input type=hidden name=logout value="{{ logout }}" />
+    	  <br />
+    	  <br />
+	       <div>
+		      <button type="submit" value="Login">Update</button>
+		      <button type="reset" value="Reset">Reset</button>
+		   </div>
+	   </form>
+    <br />
+    <br />
+    <br />
+    
+
+  </body>
+</html>

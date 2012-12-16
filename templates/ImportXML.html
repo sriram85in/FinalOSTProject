@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="/stylesheets/menu_assets/styles.css" rel="stylesheet" type="text/css">
+<title>Insert title here</title>
+</head>
+<body>
+			Welcome : <b> {{ loggedInUser }}  </b>
+	<div id='cssmenu'>
+	   <ul>
+	   		
+   			<li class='active '><a href='/welcomeBack'><span>Home</span></a></li>
+   			<li class='has-sub '><a href='#'><span>Create</span></a>
+      		<ul>
+         		<li><a href='/createCategory' ><span>Create Category</span></a></li>
+         		<li><a href='/addItems'><span>Add Items</span></a></li>
+         		<li><a href='/importXMLIntial'><span>Import XML</span></a></li>
+      		</ul>
+   			</li>
+   			<li><a href='/exportIntialXML'><span>Export XML</span></a></li>
+   			<li><a href='/searchItem'><span>Search</span></a></li>
+   			<li><a href='/voting'><span>Vote for Category</span></a></li>
+   			<li><a href='/result'><span>Results of Category</span></a></li>
+   			<li><a href="{{ logout }}">Logout</a> </li>
+		</ul>
+		</div>	
+	
+			<form method="post" action="/importXML" enctype="multipart/form-data">				
+				<input type=hidden name=loggedInUser value="{{ loggedInUser }}" />
+				<input type="file" name="imported_file" />
+				<input type="hidden" name="task_name" value="import_category" /> <br/> <br/>
+				<input type="submit" value="Import" />
+			</form>
+</body>
+</html>

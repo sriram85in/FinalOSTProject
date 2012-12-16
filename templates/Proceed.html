@@ -1,0 +1,15 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+  </head>
+  <body>
+  	
+    <form action="/welcome" method="post">
+      <h5>Login Passed. </h5>
+      <input type=hidden name=loggedInUser value="{{ loggedInUser }}" />
+      <input type=hidden name=logout value="{{ url }}" />
+      <button type="submit" value="Login">Submit</button>
+    </form>
+
+  </body>
+</html>

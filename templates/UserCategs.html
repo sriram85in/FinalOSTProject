@@ -1,0 +1,211 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link type="text/css" rel="stylesheet" href="/stylesheets/table.css" />
+    <link type="text/css" rel="stylesheet" href="/stylesheets/tablestyles.css" />
+    <link href="/stylesheets/menu_assets/styles.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+	  function toggle_visibility(id1) {
+		  alert("hi")		  
+		  if ((id1 == 'show')) {
+			  alert('f')
+		    document.getElementById('expTime').style.visibility='visible';
+		  }  
+		  else {
+			  alert('s')
+			  document.getElementById('expTime').style.visibility='hidden';
+		  }
+	  }
+
+	  function validate()
+      {
+        var timecheck = false;
+        var retval = false;
+        var hh = document.forms["userCategsForm"]["expTimeHH"].value;
+        var mm = document.forms["userCategsForm"]["expTimeMM"].value;
+        var ss = document.forms["userCategsForm"]["expTimeSS"].value;
+        
+        if(hh == null || hh == "") {
+            document.forms["userCategsForm"]["expTimeHH"].value = "0";
+            timecheck = true;
+        }
+        else if (hh > 11) {
+            timecheck = false;
+            alert('Expiration Hour cannot be greater than 12')
+            return timecheck;
+        }
+        else {
+            timecheck = true;
+        }
+        if(mm == null || mm == "") {
+            document.forms["userCategsForm"]["expTimeMM"].value = "0";
+            timecheck = true;
+        }
+        else if (mm > 59) {
+            timecheck = false;
+            alert('Expiration Minutes cannot be greater than 59')
+            return timecheck;
+        }
+        else {
+            timecheck = true;
+        }
+        if(ss == null || ss == "") {
+            document.forms["userCategsForm"]["expTimeSS"].value = "0";
+            timecheck = true;                
+        }
+        else if (ss > 59) {
+            timecheck = false;
+            alert('Expiration Seconds cannot be greater than 59')
+            return timecheck;
+        }
+        else {
+            timecheck = true;
+        }
+        for (var i=0; i < document.userCategsForm.r.length; i++)
+        {
+          if (document.userCategsForm.r[i].checked)
+          {
+            retval = true;
+            return retval;
+          }
+        }
+        alert('Select one of the options in order to proceed')
+        return retval;
+      }
+    </script>
+  </head>
+  <body>
+  	   Welcome : <b> {{ loggedInUser }}  </b>
+	<div id='cssmenu'>
+	   <ul>
+	   		
+   			<li class='active '><a href='/welcomeBack'><span>Home</span></a></li>
+   			<li class='has-sub '><a href='#'><span>Create</span></a>
+      		<ul>
+         		<li><a href='/createCategory' ><span>Create Category</span></a></li>
+         		<li><a href='/addItems'><span>Add Items</span></a></li>
+         		<li><a href='/importXMLIntial'><span>Import XML</span></a></li>
+      		</ul>
+   			</li>
+   			<li><a href='/exportIntialXML'><span>Export XML</span></a></li>
+   			<li><a href='/searchItem'><span>Search</span></a></li>
+   			<li><a href='/voting'><span>Vote for Category</span></a></li>
+   			<li><a href='/result'><span>Results of Category</span></a></li>
+   			<li><a href="{{ logout }}">Logout</a> </li>
+		</ul>
+		</div>	
+	
+  	   <br />
+  	   	<br />
+  	   	<br />
+	   <form name="userCategsForm" action="/allItemsForUser" onsubmit="return validate()" method="post">
+  	   	  <p>Please select a category:</p>
+  	   	 
+	   		<table class="imagetable">
+	   		<tr>
+	   		<th></th>
+	   		<th>Category Name</th>
+	   		
+	   		</tr>
+	   		
+	   		{% for category in categsForUser %}
+	        	<tr>
+	        	<td>
+	        	<input type=radio id="r" name=catName value="{{ category.categoryName }}" /> 
+	        	</td>
+	        	<td>
+	        	{{ category.categoryName }}
+	        	</td>
+	        	
+	        	
+    			</tr>
+    		{% endfor %}
+    		</table>
+    		
+    			<br/>
+    			<br/>
+    			<p>Please enter the expiration time (HH:MM:SS) for the selected category (Optional)
+    			
+    		  <table border="0" cellspacing="0" >
+              <tr>
+              </td><td align=left> 
+              Days<select name='day'>
+              <option value='01'>01</option>
+              <option value='02'>02</option>
+              <option value='03'>03</option>
+              <option value='04'>04</option>
+              <option value='05'>05</option>
+              <option value='06'>06</option>
+              <option value='07'>07</option>
+              <option value='08'>08</option>
+              <option value='09'>09</option>
+              <option value='10'>10</option>
+              <option value='11'>11</option>
+              <option value='12'>12</option>
+              <option value='13'>13</option>
+              <option value='14'>14</option>
+              <option value='15'>15</option>
+              <option value='16'>16</option>
+              <option value='17'>17</option>
+              <option value='18'>18</option>
+              <option value='19'>19</option>
+              <option value='20'>20</option>
+              <option value='21'>21</option>
+              <option value='22'>22</option>
+              <option value='23'>23</option>
+              <option value='24'>24</option>
+              <option value='25'>25</option>
+              <option value='26'>26</option>
+              <option value='27'>27</option>
+              <option value='28'>28</option>
+              <option value='29'>29</option>
+              <option value='30'>30</option>
+              <option value='31' selected="selected">31</option>
+              </select>
+
+
+              </td><td align=left>
+              Hours<select name='hours'>
+              <option value='00'>00</option>
+              <option value='01'>01</option>
+              <option value='02'>02</option>
+              <option value='03'>03</option>
+              <option value='04'>04</option>
+              <option value='05'>05</option>
+              <option value='06'>06</option>
+              <option value='07'>07</option>
+              <option value='08'>08</option>
+              <option value='09'>09</option>
+              <option value='10'>10</option>
+              <option value='11'>11</option>
+              <option value='12'>12</option>
+              <option value='13'>13</option>
+              <option value='14'>14</option>
+              <option value='15'>15</option>
+              <option value='16'>16</option>
+              <option value='17'>17</option>
+              <option value='18'>18</option>
+              <option value='19'>19</option>
+              <option value='20'>20</option>
+              <option value='21'>21</option>
+              <option value='22'>22</option>
+              <option value='23' selected="selected">23</option>
+              </select>
+              </td></table>
+    			
+		        <input type=hidden name=loggedInUser value="{{ loggedInUser }}" />
+		        <input type=hidden name=logout value="{{ logout }}" />
+		        <input type=hidden id="r" />
+		        <br />
+	       <div>
+		      <button type="submit" value="Login">Submit</button>
+		      <button type="reset" value="Reset">Reset</button>
+		   </div>
+	   </form>
+    <br />
+    <br />
+    <br />
+   
+
+  </body>
+</html>

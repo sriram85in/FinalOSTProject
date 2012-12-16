@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link type="text/css" rel="stylesheet" href="/stylesheets/tablestyles.css" />
+    <link href="/stylesheets/menu_assets/styles.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+  		Welcome : <b> {{ loggedInUser }}  </b>
+	<div id='cssmenu'>
+	   <ul>
+	   		
+   			<li class='active '><a href='/welcomeBack'><span>Home</span></a></li>
+   			<li class='has-sub '><a href='#'><span>Create</span></a>
+      		<ul>
+         		<li><a href='/createCategory' ><span>Create Category</span></a></li>
+         		<li><a href='/addItems'><span>Add Items</span></a></li>
+         		<li><a href='/importXMLIntial'><span>Import XML</span></a></li>
+      		</ul>
+   			</li>
+   			<li><a href='/exportIntialXML'><span>Export XML</span></a></li>
+   			<li><a href='/searchItem'><span>Search</span></a></li>
+   			<li><a href='/voting'><span>Vote for Category</span></a></li>
+   			<li><a href='/result'><span>Results of Category</span></a></li>
+   			<li><a href="{{ logout }}">Logout</a> </li>
+		</ul>
+		</div>	
+	
+  		<br />
+  		<br />
+  		<br />
+ 		Category Selected : <b>{{ categoryName }} </b></p> 
+   		<table class="imagetable">
+   			<tr>
+        	   <th>ItemName </th>
+        	   <th>WinCount </th>
+        	   <th>LossCount </th>
+        	   <th>Winning Percent </th>
+        	   <th>User Comments </th>
+        	</tr>
+   		{% for result in allResults %}
+   			 <tr>
+        	   <td>{{ result.itemName }} </td>
+        	   <td>{{ result.winCount }} </td>
+        	   <td>{{ result.lossCount }} </td>
+        	   <td>{{ result.percentWin }} </td>
+        	   <td>
+        	   			   		{% for eachUser in result.userList %}
+			        	   			{{ eachUser }}  : 
+			        	   			
+			        			{% endfor %}
+        	   			   		{% for eachComment in result.userComment %}
+			        	   			{{ eachComment }}
+			        	   			
+			        			{% endfor %}
+			        			<br />	   			
+        	   		
+        	   </td>	        	    
+        	 </tr>
+   		{% endfor %}
+   		</table>
+   		<hr>
+    	<br />
+    	<input type=hidden name=logout value="{{ logout }}" />
+    	<br />
+    	<br />
+    	
+
+  </body>
+</html>
